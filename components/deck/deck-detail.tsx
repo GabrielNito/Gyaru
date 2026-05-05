@@ -67,29 +67,33 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
       {/* Meta section */}
       <section className="grid gap-4 sm:grid-cols-[1fr_auto]">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{deck.name}</h1>
-          {deck.description && (
-            <p className="mt-2 text-sm text-muted-foreground">{deck.description}</p>
-          )}
-          <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-2 font-mono text-xs text-muted-foreground">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-2 font-mono text-xs text-muted-foreground">
             <span>
-              {td("cards")}: <span className="text-foreground">{deck.cards.length}</span>
+              {td("cards")}:{" "}
+              <span className="text-foreground">{deck.cards.length}</span>
             </span>
             <span>
-              {td("status")}: <span className="text-foreground">{td("ready")}</span>
+              {td("status")}:{" "}
+              <span className="text-foreground">{td("ready")}</span>
             </span>
             <span>
-              {td("owner")}: <span className="text-foreground">{deck.userId ? user?.email?.slice(0, 20) ?? "user" : td("anonymous")}</span>
+              {td("owner")}:{" "}
+              <span className="text-foreground">
+                {deck.userId
+                  ? (user?.email?.slice(0, 20) ?? "user")
+                  : td("anonymous")}
+              </span>
             </span>
             <span>
-              {td("updated")}: <span className="text-foreground">{dateStr}</span>
+              {td("updated")}:{" "}
+              <span className="text-foreground">{dateStr}</span>
             </span>
           </div>
         </div>
         <div className="flex flex-col gap-2 sm:self-start">
           <a
             href={`/api/download/${deck.id}`}
-            className="inline-flex items-center justify-center gap-2 rounded-none bg-accent px-5 py-2 text-sm font-semibold uppercase tracking-wider text-accent-foreground border border-accent transition-colors hover:bg-transparent hover:text-accent"
+            className="inline-flex items-center justify-center gap-2 rounded-none border border-accent bg-accent px-5 py-2 text-sm font-semibold tracking-wider text-accent-foreground uppercase transition-colors hover:bg-transparent hover:text-accent"
             download
           >
             <Download className="h-4 w-4" />
@@ -97,7 +101,7 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
           </a>
           <button
             onClick={copyShareLink}
-            className="inline-flex items-center justify-center gap-2 rounded-none border border-border px-5 py-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center justify-center gap-2 rounded-none border border-border px-5 py-2 text-sm font-semibold tracking-wider text-muted-foreground uppercase transition-colors hover:text-foreground"
           >
             <Share2 className="h-4 w-4" />
             {td("shareLink")}
@@ -106,27 +110,31 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
             <>
               <Link
                 href={`/${locale}/editor/${deck.id}`}
-                className="inline-flex items-center justify-center gap-2 rounded-none border border-border px-5 py-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                className="inline-flex items-center justify-center gap-2 rounded-none border border-border px-5 py-2 text-sm font-semibold tracking-wider text-muted-foreground uppercase transition-colors hover:border-primary hover:text-primary"
               >
                 <Pencil className="h-4 w-4" />
                 Edit
               </Link>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <button className="inline-flex items-center justify-center gap-2 rounded-none border border-border px-5 py-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:border-destructive hover:text-destructive">
+                  <button className="inline-flex items-center justify-center gap-2 rounded-none border border-border px-5 py-2 text-sm font-semibold tracking-wider text-muted-foreground uppercase transition-colors hover:border-destructive hover:text-destructive">
                     <Trash2 className="h-4 w-4" />
                     {t("delete")}
                   </button>
                 </AlertDialogTrigger>
                 <AlertDialogContent className="rounded-none border border-border bg-card">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>{t("deleteTitle", { name: deck.name })}</AlertDialogTitle>
+                    <AlertDialogTitle>
+                      {t("deleteTitle", { name: deck.name })}
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
                       {t("deleteDesc", { count: deck.cards.length })}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter className="rounded-none">
-                    <AlertDialogCancel className="rounded-none border-border">{t("cancel")}</AlertDialogCancel>
+                    <AlertDialogCancel className="rounded-none border-border">
+                      {t("cancel")}
+                    </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDelete}
                       disabled={isDeleting}
@@ -145,17 +153,21 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
       {/* Cards list */}
       <section>
         <div className="mb-4 border-b border-border pb-3">
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+          <span className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
             {td("sectionLabel")}
           </span>
-          <h2 className="mt-1 text-xl font-bold tracking-tight">{td("sectionTitle")}</h2>
+          <h2 className="mt-1 text-xl font-bold tracking-tight">
+            {td("sectionTitle")}
+          </h2>
         </div>
         {deck.cards.length === 0 ? (
-          <p className="font-mono text-sm text-muted-foreground">{td("noCards")}</p>
+          <p className="font-mono text-sm text-muted-foreground">
+            {td("noCards")}
+          </p>
         ) : (
           <div className="grid gap-px bg-border">
             {/* Header */}
-            <div className="grid grid-cols-[auto_1fr_1fr] gap-4 bg-background px-4 py-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            <div className="grid grid-cols-[auto_1fr_1fr] gap-4 bg-background px-4 py-2 font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
               <span>#</span>
               <span>{td("front")}</span>
               <span>{td("back")}</span>
@@ -166,11 +178,13 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
                 key={card.id}
                 className="grid grid-cols-[auto_1fr_1fr] gap-4 bg-background px-4 py-3 text-sm hover:bg-secondary/30"
               >
-                <span className="font-mono text-[10px] text-muted-foreground">
+                <span className="font-mono text-[10px] text-muted-foreground select-none">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <p className="whitespace-pre-wrap">{card.front}</p>
-                <p className="whitespace-pre-wrap text-muted-foreground">{card.back}</p>
+                <p className="whitespace-pre-wrap text-muted-foreground">
+                  {card.back}
+                </p>
               </div>
             ))}
           </div>

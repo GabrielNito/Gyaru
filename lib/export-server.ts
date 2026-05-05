@@ -41,27 +41,38 @@ function escapeSql(str: string): string {
   return str.replace(/'/g, "''")
 }
 
+function sanitizeField(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\\n/g, "<br>")
+    .replace(/\r?\n/g, "<br>")
+}
+
 export async function createAnkiDb(deck: ExportDeck): Promise<Uint8Array> {
   const SQL = await getSqlJs()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const db = new (SQL as any).Database()
   const ts = Math.floor(Date.now() / 1000)
 
+  const deckId = 1
   const decks = JSON.stringify({
     1: {
-      id: 1,
+      id: deckId,
       name: deck.name,
       mtimeSecs: ts,
       usn: -1,
-      conf: 1,
-      dyn: false,
+      desc: "",
+      dyn: 0,
       collapsed: false,
-      browserCollapsed: false,
+      conf: 1,
       extendNew: 10,
       extendRev: 50,
-      newToday: [ts, 0],
-      revToday: [ts, 0],
-      timeToday: [ts, 0],
+      newToday: [0, 0],
+      revToday: [0, 0],
+      timeToday: [0, 0],
+      lrnToday: [0, 0],
     },
   })
 
@@ -100,35 +111,83 @@ export async function createAnkiDb(deck: ExportDeck): Promise<Uint8Array> {
     },
   })
 
-  const deckConf = JSON.stringify({
+  const conf = JSON.stringify({
+    activeDecks: [1],
+    curDeck: 1,
+    newSpread: 0,
+    sortType: "noteFld",
+    sortBackwards: false,
+    addToCur: true,
+    dayLearnFirst: false,
+    schedVer: 2,
+  })
+
+  const dconf = JSON.stringify({
     1: {
       id: 1,
       name: "Default",
       mtimeSecs: ts,
       usn: -1,
+      mod: ts,
       maxTaken: 60,
       timer: 0,
       autoplay: true,
       replayq: true,
+      new: {
+        bury: false,
+        delays: [1, 10],
+        initialFactor: 2500,
+        ints: {
+          graduatingInterval: 1,
+          easyInterval: 4,
+          superGraduatingInterval: 0,
+          asSuperGraduating: false,
+        },
+        order: 0,
+        perDay: 20,
+        rediscover: 1,
+        sort: 1,
+      },
+      rev: {
+        bury: false,
+        ease4: 1.15,
+        hardFactor: 1.2,
+        ivlFuzz: 0.05,
+        lapseDelay: 0,
+        maxIvl: 36500,
+        perDay: 200,
+      },
+      lapse: {
+        delays: [10],
+        leechAction: 1,
+        leechFails: 8,
+        minInt: 1,
+        mult: 0,
+      },
+      dyn: false,
+      collapse: false,
+      browserCollapsed: false,
     },
   })
 
   try {
     db.run(`
       CREATE TABLE col (
-        id INTEGER PRIMARY KEY, crt INTEGER, mod INTEGER, scm INTEGER, ver INTEGER,
-        dty INTEGER, usn INTEGER, ls INTEGER, conf TEXT, models TEXT, decks TEXT,
-        crtdata TEXT, dyn TEXT
+        id INTEGER PRIMARY KEY, crt INTEGER NOT NULL, mod INTEGER NOT NULL, scm INTEGER NOT NULL,
+        ver INTEGER NOT NULL, dty INTEGER NOT NULL, usn INTEGER NOT NULL, ls INTEGER NOT NULL,
+        conf TEXT NOT NULL, models TEXT NOT NULL, decks TEXT NOT NULL, dconf TEXT NOT NULL,
+        tags TEXT NOT NULL
       )
     `)
 
     db.run(`
       INSERT INTO col VALUES(
-        1, ${ts}, ${ts}, ${ts}, 15, 0, -1, 0,
-        '${escapeSql(deckConf)}',
+        1, ${ts}, ${ts}, ${ts}, 11, 0, -1, 0,
+        '${escapeSql(conf)}',
         '${escapeSql(models)}',
         '${escapeSql(decks)}',
-        '{}', '{}'
+        '${escapeSql(dconf)}',
+        '{}'
       )
     `)
 
@@ -171,7 +230,9 @@ export async function createAnkiDb(deck: ExportDeck): Promise<Uint8Array> {
       const card = deck.cards[i]
       const noteId = 1710000000001 + i
       const guid = `gyaru${noteId}`
-      const flds = `${card.front}\x1f${card.back}`
+      const front = sanitizeField(card.front)
+      const back = sanitizeField(card.back)
+      const flds = `${front}\x1f${back}`
 
       db.run(
         `INSERT INTO notes (id, guid, mid, mod, usn, tags, flds, sfld, csum, flags, data)
@@ -181,7 +242,7 @@ export async function createAnkiDb(deck: ExportDeck): Promise<Uint8Array> {
 
       db.run(
         `INSERT INTO cards (id, nid, did, ord, mod, usn, type, queue, due, ivl, factor, reps, lapses, left, odue, odid, flags, data)
-         VALUES (?, ?, 1, 0, ?, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '')`,
+         VALUES (?, ?, ${deckId}, 0, ?, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '')`,
         [noteId, noteId, ts],
       )
     }

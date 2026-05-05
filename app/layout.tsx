@@ -8,8 +8,28 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 const jetBrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: "Gyaru — Anki Forge",
   description: "Create, store, and export Anki (.apkg) decks with industrial minimalist design.",
+  openGraph: {
+    title: "Gyaru — Anki Forge",
+    description: "Create, store, and export Anki (.apkg) decks with industrial minimalist design.",
+    images: [
+      {
+        url: "/Logo.png",
+        width: 512,
+        height: 512,
+        alt: "Gyaru — Anki Forge",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Gyaru — Anki Forge",
+    description: "Create, store, and export Anki (.apkg) decks with industrial minimalist design.",
+    images: ["/Logo.png"],
+  },
 }
 
 export default function RootLayout({

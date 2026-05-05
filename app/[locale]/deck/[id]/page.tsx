@@ -1,8 +1,53 @@
 import { getTranslations } from "next-intl/server"
+import { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getDeck } from "@/app/actions"
 import { DeckDetail } from "@/components/deck/deck-detail"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string; locale: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const deck = await getDeck(id)
+
+  if (!deck) {
+    return {
+      title: "Deck not found",
+    }
+  }
+
+  const ogUrl = new URL("/api/og", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000")
+  ogUrl.searchParams.set("title", deck.name)
+  ogUrl.searchParams.set("cards", String(deck.cards.length))
+  ogUrl.searchParams.set("id", deck.id)
+
+  return {
+    title: `${deck.name} — Gyaru`,
+    description: deck.description || `Anki deck with ${deck.cards.length} cards, created with Gyaru — Anki Forge.`,
+    openGraph: {
+      title: deck.name,
+      description: deck.description || `Anki deck with ${deck.cards.length} cards.`,
+      images: [
+        {
+          url: ogUrl.toString(),
+          width: 1200,
+          height: 630,
+          alt: `${deck.name} — Gyaru Anki Deck`,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: deck.name,
+      description: deck.description || `Anki deck with ${deck.cards.length} cards.`,
+      images: [ogUrl.toString()],
+    },
+  }
+}
 
 export default async function DeckPage({
   params,
@@ -33,6 +78,10 @@ export default async function DeckPage({
           >
             {t("backToDB")}
           </Link>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">{deck.name}</h1>
+          {deck.description && (
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">{deck.description}</p>
+          )}
         </div>
       </section>
 
