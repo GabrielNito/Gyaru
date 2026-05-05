@@ -97,6 +97,24 @@
     "frontRequired": "Frente é obrigatória",
     "backRequired": "Verso é obrigatório"
   },
+  "deckDetail": {
+    "heroLabel": "/// detalhe do baralho",
+    "sectionLabel": "/// lista de cartões",
+    "sectionTitle": "Todos os cartões",
+    "cards": "cartões",
+    "status": "status",
+    "ready": "pronto",
+    "owner": "proprietário",
+    "anonymous": "anônimo",
+    "updated": "atualizado",
+    "created": "criado",
+    "backToDB": "← Voltar ao Banco Global",
+    "shareLink": "Compartilhar",
+    "linkCopied": "Link copiado",
+    "noCards": "nenhum cartão neste baralho",
+    "front": "frente",
+    "back": "verso"
+  },
   "auth": {
     "signIn": "Entrar",
     "signInWithGoogle": "Entrar com Google",

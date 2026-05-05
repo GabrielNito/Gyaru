@@ -97,6 +97,24 @@
     "frontRequired": "表は必須です",
     "backRequired": "裏は必須です"
   },
+  "deckDetail": {
+    "heroLabel": "/// デッキ詳細",
+    "sectionLabel": "/// カード一覧",
+    "sectionTitle": "すべてのカード",
+    "cards": "カード",
+    "status": "ステータス",
+    "ready": "準備完了",
+    "owner": "所有者",
+    "anonymous": "匿名",
+    "updated": "更新日",
+    "created": "作成日",
+    "backToDB": "← グローバルDBに戻る",
+    "shareLink": "共有",
+    "linkCopied": "リンクをコピーしました",
+    "noCards": "このデッキにカードはありません",
+    "front": "表",
+    "back": "裏"
+  },
   "auth": {
     "signIn": "サインイン",
     "signInWithGoogle": "Googleでサインイン",

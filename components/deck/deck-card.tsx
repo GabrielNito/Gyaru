@@ -58,7 +58,12 @@ export function DeckCard({ deck, locale }: DeckCardProps) {
         <span>upd {dateStr}</span>
       </div>
       <div className="flex flex-1 flex-col gap-4 p-5">
-        <h3 className="text-lg leading-tight font-semibold">{deck.name}</h3>
+        <Link
+          href={`/${locale}/deck/${deck.id}`}
+          className="text-lg leading-tight font-semibold hover:text-accent transition-colors"
+        >
+          {deck.name}
+        </Link>
         {deck.description && (
           <p className="line-clamp-2 text-sm text-muted-foreground">
             {deck.description}
