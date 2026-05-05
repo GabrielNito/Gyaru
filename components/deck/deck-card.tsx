@@ -12,30 +12,6 @@ interface DeckCardProps {
 export function DeckCard({ deck }: DeckCardProps) {
   const [isDownloading, setIsDownloading] = useState(false)
 
-  const handleDownload = async () => {
-    setIsDownloading(true)
-    try {
-      const response = await fetch(`/api/download/${deck.id}`)
-      if (!response.ok) {
-        throw new Error("Failed to generate deck")
-      }
-
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `${deck.name.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.apkg`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      console.error("Failed to download:", error)
-    } finally {
-      setIsDownloading(false)
-    }
-  }
-
   const handleDelete = async () => {
     if (confirm(`Delete "${deck.name}"? This cannot be undone.`)) {
       await deleteDeck(deck.id)
@@ -62,14 +38,16 @@ export function DeckCard({ deck }: DeckCardProps) {
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1">
-          <button
-            onClick={handleDownload}
-            disabled={isDownloading}
-            className="inline-flex items-center justify-center rounded-none p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:opacity-50"
+          <a
+            href={`/api/download/${deck.id}`}
+            onClick={() => setIsDownloading(true)}
+            onContextMenu={(e) => e.stopPropagation()}
+            className="inline-flex items-center justify-center rounded-none p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             aria-label="Download deck"
+            download
           >
             <Download className="h-4 w-4" />
-          </button>
+          </a>
           <button
             onClick={handleDelete}
             className="inline-flex items-center justify-center rounded-none p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
