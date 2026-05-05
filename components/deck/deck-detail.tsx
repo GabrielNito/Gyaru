@@ -92,12 +92,20 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
         </div>
         <div className="flex flex-col gap-2 sm:self-start">
           <a
-            href={`/api/download/${deck.id}`}
+            href={`/api/download/${deck.id}?format=apkg`}
             className="inline-flex items-center justify-center gap-2 rounded-none border border-accent bg-accent px-5 py-2 text-sm font-semibold tracking-wider text-accent-foreground uppercase transition-colors hover:bg-transparent hover:text-accent"
             download
           >
             <Download className="h-4 w-4" />
-            {t("download")}
+            {td("downloadApkg")}
+          </a>
+          <a
+            href={`/api/download/${deck.id}?format=txt`}
+            className="inline-flex items-center justify-center gap-2 rounded-none border border-accent bg-accent px-5 py-2 text-sm font-semibold tracking-wider text-accent-foreground uppercase transition-colors hover:bg-transparent hover:text-accent"
+            download
+          >
+            <Download className="h-4 w-4" />
+            {td("downloadTxt")}
           </a>
           <button
             onClick={copyShareLink}

@@ -14,7 +14,7 @@ export default async function LocaleLayout({
   const messages = await getMessages()
 
   return (
-    <NextIntlClientProvider messages={messages}>
+    <NextIntlClientProvider locale={locale} messages={messages}>
       <AuthProvider>
         <Header />
         <main className="min-h-screen pt-16">{children}</main>

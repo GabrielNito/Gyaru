@@ -113,7 +113,9 @@
     "linkCopied": "Link copied to clipboard",
     "noCards": "no cards in this deck",
     "front": "front",
-    "back": "back"
+    "back": "back",
+    "downloadApkg": "Download .apkg",
+    "downloadTxt": "Download .txt"
   },
   "auth": {
     "signIn": "Sign in",

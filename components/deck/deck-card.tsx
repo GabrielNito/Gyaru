@@ -82,7 +82,7 @@ export function DeckCard({ deck, locale }: DeckCardProps) {
       </div>
       <div className="flex gap-2 border-t border-border p-3">
         <a
-          href={`/api/download/${deck.id}`}
+          href={`/api/download/${deck.id}?format=apkg`}
           className="inline-flex flex-1 items-center justify-center gap-2 rounded-none border border-accent bg-accent px-5 py-2 text-sm font-semibold tracking-wider text-accent-foreground uppercase transition-colors hover:bg-transparent hover:text-accent"
           download
         >

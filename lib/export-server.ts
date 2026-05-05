@@ -267,3 +267,16 @@ export async function generateApkgBuffer(deck: ExportDeck): Promise<ArrayBuffer>
   const content = await zip.generateAsync({ type: "arraybuffer" })
   return content
 }
+
+function escapeTsvField(str: string): string {
+  const html = str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\\n/g, "<br>").replace(/\r?\n/g, "<br>")
+  if (html.includes("\t") || html.includes("\n") || html.includes('"') || html.includes("<")) {
+    return `"${html.replace(/"/g, '""')}"`
+  }
+  return html
+}
+
+export function generateTxtContent(deck: ExportDeck): string {
+  const lines = deck.cards.map((card) => `${escapeTsvField(card.front)}\t${escapeTsvField(card.back)}`)
+  return lines.join("\n")
+}

@@ -113,7 +113,9 @@
     "linkCopied": "リンクをコピーしました",
     "noCards": "このデッキにカードはありません",
     "front": "表",
-    "back": "裏"
+    "back": "裏",
+    "downloadApkg": ".apkgをダウンロード",
+    "downloadTxt": ".txtをダウンロード"
   },
   "auth": {
     "signIn": "サインイン",

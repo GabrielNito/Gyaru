@@ -113,7 +113,9 @@
     "linkCopied": "Link copiado",
     "noCards": "nenhum cartão neste baralho",
     "front": "frente",
-    "back": "verso"
+    "back": "verso",
+    "downloadApkg": "Baixar .apkg",
+    "downloadTxt": "Baixar .txt"
   },
   "auth": {
     "signIn": "Entrar",
