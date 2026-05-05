@@ -9,6 +9,21 @@ import { toast } from "sonner"
 import { saveDeck } from "@/app/actions"
 import { deckSchema, type DeckInput } from "@/lib/types"
 import { useAuth } from "@/components/auth-provider"
+import { z } from "zod"
+
+const editorCardSchema = z.object({
+  id: z.string().optional(),
+  front: z.string(),
+  back: z.string(),
+})
+
+const editorDeckSchema = z.object({
+  name: z.string().min(1, "Deck name is required"),
+  description: z.string().optional(),
+  cards: z.array(editorCardSchema).min(1, "At least one card is required"),
+})
+
+type EditorDeckInput = z.infer<typeof editorDeckSchema>
 
 export default function EditorPage() {
   const t = useTranslations("editor")
@@ -25,8 +40,8 @@ export default function EditorPage() {
     setValue,
     setFocus,
     formState: { errors },
-  } = useForm<DeckInput>({
-    resolver: zodResolver(deckSchema),
+  } = useForm<EditorDeckInput>({
+    resolver: zodResolver(editorDeckSchema),
     defaultValues: {
       name: "",
       description: "",
@@ -50,11 +65,31 @@ export default function EditorPage() {
       toast.warning(t("emptyCard"), { description: t("emptyCardDesc") })
       return
     }
-    append({ front: "", back: "" })
+    append({ front: currentFront, back: currentBack })
     setValue("cards.0.front", "")
     setValue("cards.0.back", "")
     setFocus("cards.0.front")
     toast.success(t("cardAdded"), { description: t("cardAddedDesc", { count: fields.length }) })
+  }
+
+  const onSubmit = (data: EditorDeckInput) => {
+    const filteredCards = data.cards.filter((c) => c.front.trim() || c.back.trim())
+    if (filteredCards.length === 0) {
+      toast.warning(t("emptyCard"), { description: t("emptyCardDesc") })
+      return
+    }
+    startTransition(async () => {
+      const result = await saveDeck({ name: data.name, description: data.description, cards: filteredCards }, user?.uid)
+      if (result.success) {
+        toast.success(t("saved"), { description: t("savedDesc", { name: data.name }) })
+        setTimeout(() => {
+          router.push(`/${locale}`)
+          router.refresh()
+        }, 1000)
+      } else {
+        toast.error(t("saveFailed"), { description: t("saveFailedDesc") })
+      }
+    })
   }
 
   const handleBackKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -88,21 +123,6 @@ export default function EditorPage() {
     stmt.free()
     db.close()
     return cards
-  }
-
-  const onSubmit = (data: DeckInput) => {
-    startTransition(async () => {
-      const result = await saveDeck(data, user?.uid)
-      if (result.success) {
-        toast.success(t("saved"), { description: t("savedDesc", { name: data.name }) })
-        setTimeout(() => {
-          router.push(`/${locale}`)
-          router.refresh()
-        }, 1000)
-      } else {
-        toast.error(t("saveFailed"), { description: t("saveFailedDesc") })
-      }
-    })
   }
 
   const tAuth = useTranslations("auth")

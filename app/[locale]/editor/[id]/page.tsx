@@ -9,6 +9,21 @@ import { toast } from "sonner"
 import { getDeck, updateDeck } from "@/app/actions"
 import { deckSchema, type DeckInput, type DeckWithCards } from "@/lib/types"
 import { useAuth } from "@/components/auth-provider"
+import { z } from "zod"
+
+const editorCardSchema = z.object({
+  id: z.string().optional(),
+  front: z.string(),
+  back: z.string(),
+})
+
+const editorDeckSchema = z.object({
+  name: z.string().min(1, "Deck name is required"),
+  description: z.string().optional(),
+  cards: z.array(editorCardSchema).min(1, "At least one card is required"),
+})
+
+type EditorDeckInput = z.infer<typeof editorDeckSchema>
 
 export default function EditDeckPage({ params }: { params: Promise<{ id: string }> }) {
   const t = useTranslations("editor")
@@ -27,8 +42,8 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
     setValue,
     reset,
     formState: { errors },
-  } = useForm<DeckInput>({
-    resolver: zodResolver(deckSchema),
+  } = useForm<EditorDeckInput>({
+    resolver: zodResolver(editorDeckSchema),
     defaultValues: {
       name: "",
       description: "",
@@ -65,10 +80,15 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
   const charCount = useMemo(() => currentFront.length + currentBack.length, [currentFront, currentBack])
   const stagedCount = fields.length - 1
 
-  const onSubmit = (data: DeckInput) => {
+  const onSubmit = (data: EditorDeckInput) => {
     params.then(({ id }) => {
       startTransition(async () => {
-        const result = await updateDeck(id, data, user?.uid)
+        const filteredCards = data.cards.filter((c) => c.front.trim() || c.back.trim())
+        if (filteredCards.length === 0) {
+          toast.warning(t("emptyCard"), { description: t("emptyCardDesc") })
+          return
+        }
+        const result = await updateDeck(id, { name: data.name, description: data.description, cards: filteredCards }, user?.uid)
         if (result.success) {
           toast.success(t("updated"), { description: t("updatedDesc", { name: data.name }) })
           setTimeout(() => {
@@ -191,7 +211,7 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
                       toast.warning(t("emptyCard"), { description: t("emptyCardDesc") })
                       return
                     }
-                    append({ front: "", back: "" })
+                    append({ front: currentFront, back: currentBack })
                     setValue("cards.0.front", "")
                     setValue("cards.0.back", "")
                     toast.success(t("cardAdded"), { description: t("cardAddedDesc", { count: fields.length }) })
