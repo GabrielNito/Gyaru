@@ -8,7 +8,6 @@ import { useTranslations, useLocale } from "next-intl"
 import { LocaleSwitcher } from "@/components/locale-switcher"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useAuth } from "@/components/auth-provider"
-import { Button } from "./ui/button"
 
 export function Header() {
   const t = useTranslations("nav")
@@ -99,14 +98,13 @@ export function Header() {
             >
               {t("globalDB")}
             </Link>
-            <Button asChild>
-              <Link
-                href={`/${locale}/editor`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t("create")}
-              </Link>
-            </Button>
+            <Link
+              href={`/${locale}/editor`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-none border border-accent bg-accent px-3 py-2 font-mono text-xs tracking-wider text-accent-foreground uppercase transition-colors hover:bg-transparent hover:text-accent"
+            >
+              {t("create")}
+            </Link>
             <div className="flex items-center gap-2 border-t border-border pt-2">
               <ThemeToggle />
               <LocaleSwitcher />

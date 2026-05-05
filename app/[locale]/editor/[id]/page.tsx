@@ -138,7 +138,7 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
       <section className="border-b border-border bg-grid">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
           <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-            <span className="h-px w-8 bg-primary" />
+            <span className="h-px w-8 bg-accent" />
             <span>{t("heroLabel")}</span>
           </div>
           <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
@@ -160,7 +160,7 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
             <h2 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{t("sectionTitle")}</h2>
           </div>
           <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-            <span className="h-2 w-2 animate-pulse bg-primary" />
+            <span className="h-2 w-2 animate-pulse bg-accent" />
             {t("chars", { count: charCount })} · {t("cardsStaged", { count: stagedCount + (currentFront || currentBack ? 1 : 0) })}
           </div>
         </div>
@@ -321,7 +321,7 @@ function CardPreview({ front, back }: { front: string; back: string }) {
         className="group relative aspect-[4/3] w-full border border-border bg-card p-6 text-left transition-colors hover:border-accent"
       >
         <div className="absolute left-0 top-0 flex h-6 items-center gap-2 border-b border-r border-border bg-background px-2">
-          <span className={`h-1.5 w-1.5 ${flipped ? "bg-primary" : "bg-accent"}`} />
+          <span className={`h-1.5 w-1.5 bg-accent`} />
           <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
             {flipped ? t("backLabel") : t("frontLabel")}
           </span>

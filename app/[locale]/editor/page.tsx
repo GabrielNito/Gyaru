@@ -470,7 +470,7 @@ function CardPreview({ front, back }: { front: string; back: string }) {
         className="group relative aspect-[4/3] w-full border border-border bg-card p-6 text-left transition-colors hover:border-accent"
       >
         <div className="absolute left-0 top-0 flex h-6 items-center gap-2 border-b border-r border-border bg-background px-2">
-          <span className={`h-1.5 w-1.5 ${flipped ? "bg-primary" : "bg-accent"}`} />
+          <span className={`h-1.5 w-1.5 bg-accent`} />
           <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
             {flipped ? t("backLabel") : t("frontLabel")}
           </span>

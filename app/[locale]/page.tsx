@@ -19,7 +19,7 @@ export default async function HomePage({
       <section className="bg-grid border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
           <div className="flex items-center gap-3 font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
-            <span className="h-px w-8 bg-primary" />
+            <span className="h-px w-8 bg-accent" />
             <span>{t("heroLabel")}</span>
           </div>
           <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
