@@ -266,9 +266,9 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
               <button
                 type="submit"
                 disabled={isPending}
-                className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-none bg-primary px-5 py-2 text-sm font-semibold uppercase tracking-wider text-primary-foreground border border-primary transition-colors hover:bg-transparent hover:text-primary disabled:opacity-50"
+                className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-none bg-accent px-5 py-2 text-sm font-semibold uppercase tracking-wider text-accent-foreground border border-accent transition-colors hover:bg-transparent hover:text-accent disabled:opacity-50"
               >
-                {isPending ? t("saving") : t("exportEdit", { name: deckName || "deck" })}
+                {isPending ? t("saving") : t("exportEdit")}
               </button>
             </aside>
           </div>

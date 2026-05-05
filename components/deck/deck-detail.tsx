@@ -121,7 +121,7 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
                 className="inline-flex items-center justify-center gap-2 rounded-none border border-border px-5 py-2 text-sm font-semibold tracking-wider text-muted-foreground uppercase transition-colors hover:border-primary hover:text-primary"
               >
                 <Pencil className="h-4 w-4" />
-                Edit
+                {t("edit")}
               </Link>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
