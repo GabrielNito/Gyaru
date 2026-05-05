@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server"
 import { Metadata } from "next"
+import { headers } from "next/headers"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getDeck } from "@/app/actions"
@@ -19,7 +20,12 @@ export async function generateMetadata({
     }
   }
 
-  const ogUrl = new URL("/api/og", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000")
+  const h = await headers()
+  const host = h.get("host")
+  const protocol = h.get("x-forwarded-proto") || "https"
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`
+
+  const ogUrl = new URL("/api/og", baseUrl)
   ogUrl.searchParams.set("title", deck.name)
   ogUrl.searchParams.set("cards", String(deck.cards.length))
   ogUrl.searchParams.set("id", deck.id)
