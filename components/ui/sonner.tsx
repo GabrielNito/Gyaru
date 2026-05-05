@@ -1,12 +1,26 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 
 const Toaster = ({ ...props }: ToasterProps) => {
+  const [theme, setTheme] = useState<"light" | "dark">("dark")
+
+  useEffect(() => {
+    const stored = localStorage.getItem("theme")
+    if (stored === "light") {
+      setTheme("light")
+    } else if (stored === "dark") {
+      setTheme("dark")
+    } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+      setTheme("light")
+    }
+  }, [])
+
   return (
     <Sonner
-      theme="dark"
+      theme={theme}
       className="toaster group"
       icons={{
         success: (

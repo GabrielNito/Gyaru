@@ -6,6 +6,7 @@ import Image from "next/image"
 import { Menu, X } from "lucide-react"
 import { useTranslations, useLocale } from "next-intl"
 import { LocaleSwitcher } from "@/components/locale-switcher"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { useAuth } from "@/components/auth-provider"
 import { Button } from "./ui/button"
 
@@ -50,6 +51,7 @@ export function Header() {
           >
             {t("create")}
           </Link>
+          <ThemeToggle />
           <LocaleSwitcher />
           {loading ? null : user ? (
             <div className="flex items-center gap-2">
@@ -106,6 +108,7 @@ export function Header() {
               </Link>
             </Button>
             <div className="flex items-center gap-2 border-t border-border pt-2">
+              <ThemeToggle />
               <LocaleSwitcher />
               {loading ? null : user ? (
                 <>
