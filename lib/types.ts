@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 export const cardSchema = z.object({
+  id: z.string().optional(),
   front: z.string().min(1, "Front is required"),
   back: z.string().min(1, "Back is required"),
 })

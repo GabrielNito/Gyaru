@@ -1,15 +1,11 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+import { Inter, JetBrains_Mono } from "next/font/google"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+const jetBrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export default function RootLayout({
   children,
@@ -17,13 +13,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
-    >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+    <html lang="en" suppressHydrationWarning className="dark">
+      <body className={cn("antialiased bg-background text-foreground", inter.variable, jetBrainsMono.variable)}>
+        {children}
+        <Toaster position="top-center" />
       </body>
     </html>
   )

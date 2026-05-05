@@ -1,6 +1,8 @@
 import initSqlJs from "sql.js"
-import type { Database, SqlJsStatic } from "sql.js"
+import type { SqlJsStatic } from "sql.js"
 import JSZip from "jszip"
+import fs from "fs"
+import path from "path"
 
 export interface ExportCard {
   front: string
@@ -16,9 +18,21 @@ let sqlPromise: Promise<SqlJsStatic> | null = null
 
 function getSqlJs() {
   if (!sqlPromise) {
-    sqlPromise = initSqlJs({
-      locateFile: (file: string) => `https://sql.js.org/dist/${file}`,
-    }) as Promise<SqlJsStatic>
+    sqlPromise = (async () => {
+      const wasmPath = path.join(
+        process.cwd(),
+        "node_modules",
+        "sql.js",
+        "dist",
+        "sql-wasm.wasm",
+      )
+      const wasmBinary = fs.readFileSync(wasmPath).buffer as ArrayBuffer
+
+      const SQL = await initSqlJs({
+        wasmBinary,
+      })
+      return SQL as SqlJsStatic
+    })()
   }
   return sqlPromise
 }
@@ -180,7 +194,7 @@ export async function createAnkiDb(deck: ExportDeck): Promise<Uint8Array> {
   }
 }
 
-export async function generateApkgBuffer(deck: ExportDeck): Promise<Uint8Array> {
+export async function generateApkgBuffer(deck: ExportDeck): Promise<ArrayBuffer> {
   const zip = new JSZip()
 
   const ankiDb = await createAnkiDb(deck)
@@ -189,6 +203,6 @@ export async function generateApkgBuffer(deck: ExportDeck): Promise<Uint8Array> 
   const media: Record<string, string> = {}
   zip.file("media", JSON.stringify(media))
 
-  const content = await zip.generateAsync({ type: "uint8array" })
+  const content = await zip.generateAsync({ type: "arraybuffer" })
   return content
 }

@@ -90,3 +90,46 @@ export async function deleteDeck(id: string): Promise<{ success: boolean }> {
     return { success: false }
   }
 }
+
+export async function updateDeck(
+  id: string,
+  data: DeckInput,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const validated = deckSchema.parse(data)
+
+    const existing = await db.deck.findUnique({
+      where: { id },
+    })
+
+    if (!existing) {
+      return { success: false, error: "Deck not found" }
+    }
+
+    await db.card.deleteMany({
+      where: { deckId: id },
+    })
+
+    await db.deck.update({
+      where: { id },
+      data: {
+        name: validated.name,
+        description: validated.description,
+        cards: {
+          create: validated.cards.map((card) => ({
+            front: card.front,
+            back: card.back,
+          })),
+        },
+      },
+    })
+
+    revalidatePath("/")
+    revalidatePath("/editor")
+
+    return { success: true }
+  } catch (error) {
+    console.error("Failed to update deck:", error)
+    return { success: false, error: "Failed to update deck" }
+  }
+}

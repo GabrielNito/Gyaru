@@ -5,14 +5,16 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useMemo, useState, useTransition } from "react"
+import { useMemo, useState, useTransition, useEffect } from "react"
 import { toast } from "sonner"
-import { saveDeck } from "@/app/actions"
-import { deckSchema, type DeckInput } from "@/lib/types"
+import { getDeck, updateDeck } from "@/app/actions"
+import { deckSchema, type DeckInput, type DeckWithCards } from "@/lib/types"
 
-export default function EditorPage() {
+export default function EditDeckPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const [deck, setDeck] = useState<DeckWithCards | null>(null)
+  const [loading, setLoading] = useState(true)
 
   const {
     register,
@@ -20,6 +22,7 @@ export default function EditorPage() {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<DeckInput>({
     resolver: zodResolver(deckSchema),
@@ -35,6 +38,24 @@ export default function EditorPage() {
     name: "cards",
   })
 
+  useEffect(() => {
+    params.then(async ({ id }) => {
+      const result = await getDeck(id)
+      if (result) {
+        setDeck(result)
+        reset({
+          name: result.name,
+          description: result.description || "",
+          cards: result.cards.length > 0 ? result.cards : [{ front: "", back: "" }],
+        })
+      } else {
+        toast.error("Deck not found")
+        router.push("/")
+      }
+      setLoading(false)
+    })
+  }, [params, reset, router])
+
   const currentFront = watch("cards.0.front") || ""
   const currentBack = watch("cards.0.back") || ""
   const deckName = watch("name") || ""
@@ -42,18 +63,28 @@ export default function EditorPage() {
   const stagedCount = fields.length - 1
 
   const onSubmit = (data: DeckInput) => {
-    startTransition(async () => {
-      const result = await saveDeck(data)
-      if (result.success) {
-        toast.success("Deck saved", { description: `${data.name} is now available for download.` })
-        setTimeout(() => {
-          router.push("/")
-          router.refresh()
-        }, 1000)
-      } else {
-        toast.error("Save failed", { description: result.error || "Could not save the deck. Please try again." })
-      }
+    params.then(({ id }) => {
+      startTransition(async () => {
+        const result = await updateDeck(id, data)
+        if (result.success) {
+          toast.success("Deck updated", { description: `${data.name} has been saved.` })
+          setTimeout(() => {
+            router.push("/")
+            router.refresh()
+          }, 1000)
+        } else {
+          toast.error("Update failed", { description: result.error || "Could not update the deck." })
+        }
+      })
     })
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="font-mono text-xs text-muted-foreground">loading...</div>
+      </div>
+    )
   }
 
   return (
@@ -66,7 +97,7 @@ export default function EditorPage() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <span className="font-mono text-sm tracking-tight">Deck Editor</span>
+          <span className="font-mono text-sm tracking-tight">Edit: {deck?.name}</span>
         </div>
       </header>
 
@@ -74,16 +105,14 @@ export default function EditorPage() {
       <section className="border-b border-border bg-grid">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
           <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-            <span className="h-px w-8 bg-accent" />
+            <span className="h-px w-8 bg-primary" />
             <span>v0.1 · deck forge</span>
           </div>
           <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-            Forge <span className="text-accent">.apkg</span> decks with
-            <br className="hidden sm:block" /> industrial precision.
+            Edit <span className="text-primary">.apkg</span> deck
           </h1>
           <p className="mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
-            A minimalist tool for building, previewing, and sharing Anki flashcards.
-            No fluff. Just sharp corners and faster recall.
+            Modify your existing deck. Add, remove, or update cards.
           </p>
         </div>
       </section>
@@ -98,7 +127,7 @@ export default function EditorPage() {
             <h2 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Deck editor</h2>
           </div>
           <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-            <span className="h-2 w-2 animate-pulse bg-accent" />
+            <span className="h-2 w-2 animate-pulse bg-primary" />
             {charCount} chars · {stagedCount + (currentFront || currentBack ? 1 : 0)} cards staged
           </div>
         </div>
@@ -206,7 +235,7 @@ export default function EditorPage() {
                 disabled={isPending}
                 className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-none bg-primary px-5 py-2 text-sm font-semibold uppercase tracking-wider text-primary-foreground border border-primary transition-colors hover:bg-transparent hover:text-primary disabled:opacity-50"
               >
-                {isPending ? "saving..." : `⤓ Export ${deckName || "deck"}.apkg`}
+                {isPending ? "saving..." : `⤓ Update ${deckName || "deck"}.apkg`}
               </button>
             </aside>
           </div>

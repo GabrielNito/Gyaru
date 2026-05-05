@@ -2,6 +2,8 @@ import { getDeck } from "@/app/actions"
 import { generateApkgBuffer } from "@/lib/export-server"
 import { NextRequest, NextResponse } from "next/server"
 
+export const maxDuration = 30
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -19,14 +21,14 @@ export async function GET(
   }
 
   try {
-    const buffer = await generateApkgBuffer({
+    const data = await generateApkgBuffer({
       name: deck.name,
       cards: deck.cards,
     })
 
     const filename = `${deck.name.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.apkg`
 
-    return new NextResponse(buffer.buffer as ArrayBuffer, {
+    return new NextResponse(data, {
       headers: {
         "Content-Type": "application/octet-stream",
         "Content-Disposition": `attachment; filename="${filename}"`,
@@ -34,6 +36,7 @@ export async function GET(
     })
   } catch (error) {
     console.error("Failed to generate .apkg:", error)
-    return new NextResponse("Failed to generate deck", { status: 500 })
+    const message = error instanceof Error ? error.message : "Unknown error"
+    return new NextResponse(`Failed to generate deck: ${message}`, { status: 500 })
   }
 }
