@@ -6,12 +6,14 @@ import { usePathname } from "next/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { cn } from "@/lib/utils"
 import { LocaleSwitcher } from "@/components/locale-switcher"
+import { useAuth } from "@/components/auth-provider"
 
 export function Header() {
   const t = useTranslations("nav")
   const app = useTranslations("app")
   const locale = useLocale()
   const pathname = usePathname()
+  const { user, loading, signInWithGoogle, logout } = useAuth()
 
   const navPaths = [
     { href: `/${locale}/editor`, label: t("create") },
@@ -49,6 +51,26 @@ export function Header() {
             })}
           </nav>
           <LocaleSwitcher />
+          {loading ? null : user ? (
+            <div className="flex items-center gap-2">
+              <span className="hidden font-mono text-[10px] text-muted-foreground sm:inline">
+                {user.email?.slice(0, 16)}
+              </span>
+              <button
+                onClick={logout}
+                className="rounded-none border border-border px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={signInWithGoogle}
+              className="rounded-none border border-accent px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
+              Sign in
+            </button>
+          )}
         </div>
       </div>
     </header>

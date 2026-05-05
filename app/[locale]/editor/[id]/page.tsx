@@ -8,12 +8,14 @@ import { useTranslations, useLocale } from "next-intl"
 import { toast } from "sonner"
 import { getDeck, updateDeck } from "@/app/actions"
 import { deckSchema, type DeckInput, type DeckWithCards } from "@/lib/types"
+import { useAuth } from "@/components/auth-provider"
 
 export default function EditDeckPage({ params }: { params: Promise<{ id: string }> }) {
   const t = useTranslations("editor")
   const locale = useLocale()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const { user, loading: authLoading, signInWithGoogle } = useAuth()
   const [deck, setDeck] = useState<DeckWithCards | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -66,7 +68,7 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
   const onSubmit = (data: DeckInput) => {
     params.then(({ id }) => {
       startTransition(async () => {
-        const result = await updateDeck(id, data)
+        const result = await updateDeck(id, data, user?.uid)
         if (result.success) {
           toast.success(t("updated"), { description: t("updatedDesc", { name: data.name }) })
           setTimeout(() => {
@@ -74,13 +76,33 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
             router.refresh()
           }, 1000)
         } else {
-          toast.error(t("updateFailed"), { description: t("updateFailedDesc") })
+          if (result.error === "Unauthorized") {
+            toast.error("You don't own this deck")
+          } else {
+            toast.error(t("updateFailed"), { description: t("updateFailedDesc") })
+          }
         }
       })
     })
   }
 
-  if (loading) {
+  const isOwner = user && deck?.userId === user.uid
+
+  if (!authLoading && !isOwner) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
+        <p className="mb-4 font-mono text-sm text-muted-foreground">Sign in as the owner to edit this deck</p>
+        <button
+          onClick={signInWithGoogle}
+          className="rounded-none border border-accent px-4 py-2 font-mono text-xs uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
+          Sign in with Google
+        </button>
+      </div>
+    )
+  }
+
+  if (loading || authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="font-mono text-xs text-muted-foreground">{t("loading")}</div>

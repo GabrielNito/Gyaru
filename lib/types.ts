@@ -19,6 +19,7 @@ export interface DeckWithCards {
   id: string
   name: string
   description: string | null
+  userId: string | null
   createdAt: Date
   updatedAt: Date
   cards: {

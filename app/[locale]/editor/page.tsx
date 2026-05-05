@@ -8,12 +8,14 @@ import { useTranslations, useLocale } from "next-intl"
 import { toast } from "sonner"
 import { saveDeck } from "@/app/actions"
 import { deckSchema, type DeckInput } from "@/lib/types"
+import { useAuth } from "@/components/auth-provider"
 
 export default function EditorPage() {
   const t = useTranslations("editor")
   const locale = useLocale()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const { user, loading, signInWithGoogle } = useAuth()
 
   const {
     register,
@@ -44,7 +46,7 @@ export default function EditorPage() {
 
   const onSubmit = (data: DeckInput) => {
     startTransition(async () => {
-      const result = await saveDeck(data)
+      const result = await saveDeck(data, user?.uid)
       if (result.success) {
         toast.success(t("saved"), { description: t("savedDesc", { name: data.name }) })
         setTimeout(() => {
@@ -55,6 +57,28 @@ export default function EditorPage() {
         toast.error(t("saveFailed"), { description: t("saveFailedDesc") })
       }
     })
+  }
+
+  if (!loading && !user) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
+        <p className="mb-4 font-mono text-sm text-muted-foreground">Sign in to create a deck</p>
+        <button
+          onClick={signInWithGoogle}
+          className="rounded-none border border-accent px-4 py-2 font-mono text-xs uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
+          Sign in with Google
+        </button>
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <p className="font-mono text-sm text-muted-foreground">{t("loading")}</p>
+      </div>
+    )
   }
 
   return (

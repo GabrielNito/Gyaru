@@ -4,7 +4,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Trash2, Pencil } from "lucide-react"
 import Link from "next/link"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { deleteDeck } from "@/app/actions"
 import {
   AlertDialog,
@@ -17,6 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useAuth } from "@/components/auth-provider"
 import type { DeckWithCards } from "@/lib/types"
 
 interface DeckCardProps {
@@ -26,11 +27,14 @@ interface DeckCardProps {
 
 export function DeckCard({ deck, locale }: DeckCardProps) {
   const t = useTranslations("deck")
+  const { user } = useAuth()
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const isOwner = user && deck.userId === user.uid
 
   const handleDelete = async () => {
     setIsDeleting(true)
-    const result = await deleteDeck(deck.id)
+    const result = await deleteDeck(deck.id, user?.uid)
     if (result.success) {
       toast.success(t("deleted"))
     } else {
@@ -74,39 +78,43 @@ export function DeckCard({ deck, locale }: DeckCardProps) {
         >
           {t("download")}
         </a>
-        <Link
-          href={`/${locale}/editor/${deck.id}`}
-          className="inline-flex items-center justify-center rounded-none border border-border px-3 py-2 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-        >
-          <Pencil className="h-4 w-4" />
-        </Link>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <button
-              className="inline-flex items-center justify-center rounded-none border border-border px-3 py-2 text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+        {isOwner && (
+          <>
+            <Link
+              href={`/${locale}/editor/${deck.id}`}
+              className="inline-flex items-center justify-center rounded-none border border-border px-3 py-2 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
             >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="rounded-none border border-border bg-card">
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t("deleteTitle", { name: deck.name })}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("deleteDesc", { count: deck.cards.length })}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="rounded-none">
-              <AlertDialogCancel className="rounded-none border-border">{t("cancel")}</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="rounded-none bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
-              >
-                {isDeleting ? t("deleting") : t("delete")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+              <Pencil className="h-4 w-4" />
+            </Link>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  className="inline-flex items-center justify-center rounded-none border border-border px-3 py-2 text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="rounded-none border border-border bg-card">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("deleteTitle", { name: deck.name })}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("deleteDesc", { count: deck.cards.length })}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="rounded-none">
+                  <AlertDialogCancel className="rounded-none border-border">{t("cancel")}</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="rounded-none bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
+                  >
+                    {isDeleting ? t("deleting") : t("delete")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
       </div>
     </article>
   )

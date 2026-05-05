@@ -4,7 +4,10 @@ import { db } from "@/lib/db"
 import { deckSchema, type DeckInput, type DeckWithCards } from "@/lib/types"
 import { revalidatePath } from "next/cache"
 
-export async function saveDeck(data: DeckInput): Promise<{ success: boolean; deckId?: string; error?: string }> {
+export async function saveDeck(
+  data: DeckInput,
+  userId?: string,
+): Promise<{ success: boolean; deckId?: string; error?: string }> {
   try {
     const validated = deckSchema.parse(data)
 
@@ -12,6 +15,7 @@ export async function saveDeck(data: DeckInput): Promise<{ success: boolean; dec
       data: {
         name: validated.name,
         description: validated.description,
+        userId: userId ?? null,
         cards: {
           create: validated.cards.map((card) => ({
             front: card.front,
@@ -46,7 +50,19 @@ export async function getDecks(): Promise<DeckWithCards[]> {
       },
     })
 
-    return decks
+    return decks.map((d) => ({
+      id: d.id,
+      name: d.name,
+      description: d.description,
+      userId: d.userId,
+      createdAt: d.createdAt,
+      updatedAt: d.updatedAt,
+      cards: d.cards.map((c) => ({
+        id: c.id,
+        front: c.front,
+        back: c.back,
+      })),
+    }))
   } catch (error) {
     console.error("Failed to fetch decks:", error)
     return []
@@ -68,15 +84,44 @@ export async function getDeck(id: string): Promise<DeckWithCards | null> {
       },
     })
 
-    return deck
+    if (!deck) return null
+
+    return {
+      id: deck.id,
+      name: deck.name,
+      description: deck.description,
+      userId: deck.userId,
+      createdAt: deck.createdAt,
+      updatedAt: deck.updatedAt,
+      cards: deck.cards.map((c) => ({
+        id: c.id,
+        front: c.front,
+        back: c.back,
+      })),
+    }
   } catch (error) {
     console.error("Failed to fetch deck:", error)
     return null
   }
 }
 
-export async function deleteDeck(id: string): Promise<{ success: boolean }> {
+export async function deleteDeck(
+  id: string,
+  userId?: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
+    const existing = await db.deck.findUnique({
+      where: { id },
+    })
+
+    if (!existing) {
+      return { success: false, error: "Deck not found" }
+    }
+
+    if (existing.userId && existing.userId !== userId) {
+      return { success: false, error: "Unauthorized" }
+    }
+
     await db.deck.delete({
       where: { id },
     })
@@ -87,13 +132,14 @@ export async function deleteDeck(id: string): Promise<{ success: boolean }> {
     return { success: true }
   } catch (error) {
     console.error("Failed to delete deck:", error)
-    return { success: false }
+    return { success: false, error: "Failed to delete deck" }
   }
 }
 
 export async function updateDeck(
   id: string,
   data: DeckInput,
+  userId?: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const validated = deckSchema.parse(data)
@@ -104,6 +150,10 @@ export async function updateDeck(
 
     if (!existing) {
       return { success: false, error: "Deck not found" }
+    }
+
+    if (existing.userId && existing.userId !== userId) {
+      return { success: false, error: "Unauthorized" }
     }
 
     await db.card.deleteMany({
