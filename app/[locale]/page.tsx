@@ -1,22 +1,22 @@
+import { getTranslations } from "next-intl/server"
 import { getDecks } from "@/app/actions"
 import { DeckCard } from "@/components/deck/deck-card"
-import { Header } from "@/components/header"
 import Link from "next/link"
 
-export default async function HomePage() {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
   const decks = await getDecks()
   const totalCards = decks.reduce((sum, d) => sum + d.cards.length, 0)
+  const t = await getTranslations("home")
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-
       {/* Hero */}
       <section className="border-b border-border bg-grid">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
           <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
             <span className="h-px w-8 bg-primary" />
-            <span>/// global database</span>
+            <span>{t("heroLabel")}</span>
           </div>
           <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
@@ -24,7 +24,7 @@ export default async function HomePage() {
             </h1>
             <div className="flex items-center gap-2 border border-border px-3 py-2 font-mono text-xs">
               <span className="h-2 w-2 bg-accent" />
-              {decks.length} deck{decks.length !== 1 ? "s" : ""} · {totalCards} cards
+              {t("deckCount", { count: decks.length })} · {t("cardCount", { count: totalCards })}
             </div>
           </div>
         </div>
@@ -33,11 +33,11 @@ export default async function HomePage() {
       {/* Deck list */}
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         {decks.length === 0 ? (
-          <EmptyState />
+          <EmptyState locale={locale} />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {decks.map((deck) => (
-              <DeckCard key={deck.id} deck={deck} />
+              <DeckCard key={deck.id} deck={deck} locale={locale} />
             ))}
           </div>
         )}
@@ -46,7 +46,9 @@ export default async function HomePage() {
   )
 }
 
-function EmptyState() {
+async function EmptyState({ locale }: { locale: string }) {
+  const t = await getTranslations("home")
+
   return (
     <div className="flex flex-col items-center justify-center border border-dashed border-border py-20 text-center">
       <div className="mb-6 grid grid-cols-3 gap-1.5">
@@ -55,14 +57,14 @@ function EmptyState() {
         ))}
       </div>
       <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-        no decks indexed
+        {t("emptyTitle")}
       </h3>
       <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-        The repository is empty. Forge your first deck and publish it to the global database.
+        {t("emptyDesc")}
       </p>
-      <Link href="/editor" className="mt-6">
+      <Link href={`/${locale}/editor`} className="mt-6">
         <button className="inline-flex items-center justify-center gap-2 rounded-none bg-accent px-5 py-2 text-sm font-semibold uppercase tracking-wider text-accent-foreground border border-accent transition-colors hover:bg-transparent hover:text-accent">
-          Start your first deck →
+          {t("emptyAction")}
         </button>
       </Link>
     </div>

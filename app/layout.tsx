@@ -1,11 +1,16 @@
 import { Inter, JetBrains_Mono } from "next/font/google"
-
+import type { Metadata } from "next"
 import "./globals.css"
-import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 const jetBrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" })
+
+export const metadata: Metadata = {
+  title: "Gyaru — Anki Forge",
+  description: "Create, store, and export Anki (.apkg) decks with industrial minimalist design.",
+}
 
 export default function RootLayout({
   children,
