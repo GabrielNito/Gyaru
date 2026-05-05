@@ -4,7 +4,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useTranslations, useLocale } from "next-intl"
-import { cn } from "@/lib/utils"
 import { LocaleSwitcher } from "@/components/locale-switcher"
 import { useAuth } from "@/components/auth-provider"
 
@@ -15,10 +14,7 @@ export function Header() {
   const pathname = usePathname()
   const { user, loading, signInWithGoogle, logout } = useAuth()
 
-  const navPaths = [
-    { href: `/${locale}/editor`, label: t("create") },
-    { href: `/${locale}`, label: t("globalDB") },
-  ]
+  const isEditor = pathname.endsWith("/editor")
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
@@ -31,25 +27,18 @@ export function Header() {
           </span>
         </Link>
         <div className="flex items-center gap-2">
-          <nav className="flex items-center gap-1">
-            {navPaths.map(({ href, label }) => {
-              const isActive =
-                pathname === href ||
-                (href.endsWith("/editor") && pathname.endsWith("/editor"))
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={cn(
-                    "rounded-none px-3 py-2 font-mono text-xs uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground",
-                    isActive && "text-foreground",
-                  )}
-                >
-                  {label}
-                </Link>
-              )
-            })}
-          </nav>
+          <Link
+            href={`/${locale}`}
+            className="rounded-none px-3 py-2 font-mono text-xs uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {t("globalDB")}
+          </Link>
+          <Link
+            href={`/${locale}/editor`}
+            className="rounded-none border border-accent bg-accent px-3 py-2 font-mono text-xs uppercase tracking-wider text-accent-foreground transition-colors hover:bg-transparent hover:text-accent"
+          >
+            {t("create")}
+          </Link>
           <LocaleSwitcher />
           {loading ? null : user ? (
             <div className="flex items-center gap-2">

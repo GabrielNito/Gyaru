@@ -4,9 +4,9 @@ import { useLocale } from "next-intl"
 import { useRouter, usePathname } from "next/navigation"
 
 const locales = [
-  { code: "en", label: "EN" },
-  { code: "pt", label: "PT" },
-  { code: "ja", label: "JA" },
+  { code: "en", label: "English" },
+  { code: "pt", label: "Português" },
+  { code: "ja", label: "日本語" },
 ]
 
 export function LocaleSwitcher() {
@@ -21,20 +21,16 @@ export function LocaleSwitcher() {
   }
 
   return (
-    <div className="flex items-center gap-1">
+    <select
+      value={locale}
+      onChange={(e) => switchLocale(e.target.value)}
+      className="cursor-pointer rounded-none border border-border bg-transparent px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground outline-none focus:border-accent"
+    >
       {locales.map((l) => (
-        <button
-          key={l.code}
-          onClick={() => switchLocale(l.code)}
-          className={`rounded-none px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors ${
-            locale === l.code
-              ? "bg-accent text-accent-foreground"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
+        <option key={l.code} value={l.code} className="bg-background text-foreground">
           {l.label}
-        </button>
+        </option>
       ))}
-    </div>
+    </select>
   )
 }
