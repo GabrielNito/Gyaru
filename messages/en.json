@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "gyaru",
+    "name": "Gyaru",
     "tagline": "/ anki forge"
   },
   "nav": {
@@ -17,7 +17,7 @@
     "emptyAction": "Start your first deck →"
   },
   "deck": {
-    "download": "⤓ Download",
+    "download": "Download",
     "delete": "Delete",
     "deleting": "Deleting...",
     "cancel": "Cancel",
@@ -33,6 +33,11 @@
   "editor": {
     "header": "Deck Editor",
     "headerEdit": "Edit: {name}",
+    "importCards": "Import",
+    "cardsImported": "Cards imported",
+    "cardsImportedDesc": "{count} cards imported",
+    "importFailed": "Import failed",
+    "importFailedDesc": "No valid cards found in file",
     "heroLabel": "v0.1 · deck forge",
     "heroTitleCreate": "Forge .apkg decks with industrial precision.",
     "heroTitleEdit": "Edit .apkg deck",
@@ -91,5 +96,13 @@
     "cardRequired": "At least one card is required",
     "frontRequired": "Front is required",
     "backRequired": "Back is required"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signInWithGoogle": "Sign in with Google",
+    "signInToCreate": "Sign in to create a deck",
+    "signInAsOwner": "Sign in as the owner to edit this deck",
+    "signOut": "Sign out",
+    "youDontOwn": "You don't own this deck"
   }
 }

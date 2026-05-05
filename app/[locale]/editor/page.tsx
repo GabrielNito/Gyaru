@@ -23,6 +23,7 @@ export default function EditorPage() {
     handleSubmit,
     watch,
     setValue,
+    setFocus,
     formState: { errors },
   } = useForm<DeckInput>({
     resolver: zodResolver(deckSchema),
@@ -44,6 +45,51 @@ export default function EditorPage() {
   const charCount = useMemo(() => currentFront.length + currentBack.length, [currentFront, currentBack])
   const stagedCount = fields.length - 1
 
+  const addCardAndFocus = () => {
+    if (!currentFront.trim() && !currentBack.trim()) {
+      toast.warning(t("emptyCard"), { description: t("emptyCardDesc") })
+      return
+    }
+    append({ front: "", back: "" })
+    setValue("cards.0.front", "")
+    setValue("cards.0.back", "")
+    setFocus("cards.0.front")
+    toast.success(t("cardAdded"), { description: t("cardAddedDesc", { count: fields.length }) })
+  }
+
+  const handleBackKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      addCardAndFocus()
+    }
+  }
+
+  const parseApkg = async (file: File): Promise<{ front: string; back: string }[]> => {
+    const JSZip = (await import("jszip")).default
+    const initSqlJs = (await import("sql.js")).default
+    const zip = await JSZip.loadAsync(file)
+    const dbFile = zip.file("collection.anki2") || zip.file("anki2") || Object.values(zip.files).find(f => f.name.endsWith(".anki2"))
+    if (!dbFile) throw new Error("Invalid .apkg file")
+    const dbData = await dbFile.async("uint8array")
+    const SQL = await initSqlJs({
+      locateFile: (file: string) => {
+        if (file.endsWith(".wasm")) return "/sql-wasm.wasm"
+        return `/${file}`
+      }
+    })
+    const db = new SQL.Database(dbData as Uint8Array)
+    const stmt = db.prepare("SELECT flds FROM notes")
+    const cards: { front: string; back: string }[] = []
+    while (stmt.step()) {
+      const row = stmt.getAsObject() as { flds: string }
+      const parts = row.flds.split("\x1f")
+      cards.push({ front: parts[0] || "", back: parts[1] || parts[0] || "" })
+    }
+    stmt.free()
+    db.close()
+    return cards
+  }
+
   const onSubmit = (data: DeckInput) => {
     startTransition(async () => {
       const result = await saveDeck(data, user?.uid)
@@ -59,15 +105,17 @@ export default function EditorPage() {
     })
   }
 
+  const tAuth = useTranslations("auth")
+
   if (!loading && !user) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
-        <p className="mb-4 font-mono text-sm text-muted-foreground">Sign in to create a deck</p>
+        <p className="mb-4 font-mono text-sm text-muted-foreground">{tAuth("signInToCreate")}</p>
         <button
           onClick={signInWithGoogle}
           className="rounded-none border border-accent px-4 py-2 font-mono text-xs uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
         >
-          Sign in with Google
+          {tAuth("signInWithGoogle")}
         </button>
       </div>
     )
@@ -147,6 +195,7 @@ export default function EditorPage() {
                 <textarea
                   {...register("cards.0.back")}
                   rows={4}
+                  onKeyDown={handleBackKeyDown}
                   className="w-full resize-none bg-transparent py-3 text-lg leading-snug outline-none placeholder:text-muted-foreground"
                   placeholder={t("backPlaceholder")}
                 />
@@ -155,19 +204,74 @@ export default function EditorPage() {
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button
                   type="button"
-                  onClick={() => {
-                    if (!currentFront.trim() && !currentBack.trim()) {
-                      toast.warning(t("emptyCard"), { description: t("emptyCardDesc") })
-                      return
-                    }
-                    append({ front: "", back: "" })
-                    setValue("cards.0.front", "")
-                    setValue("cards.0.back", "")
-                    toast.success(t("cardAdded"), { description: t("cardAddedDesc", { count: fields.length }) })
-                  }}
+                  onClick={addCardAndFocus}
                   className="inline-flex items-center justify-center gap-2 rounded-none bg-accent px-5 py-2 text-sm font-semibold uppercase tracking-wider text-accent-foreground border border-accent transition-colors hover:bg-transparent hover:text-accent"
                 >
                   {t("addCard")}
+                </button>
+                <input
+                  type="file"
+                  accept=".txt,.tsv,.csv,.apkg"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0]
+                    if (!file) return
+                    const newCards: { front: string; back: string }[] = []
+                    try {
+                      if (file.name.endsWith(".apkg")) {
+                        try {
+                          newCards.push(...await parseApkg(file))
+                        } catch (err) {
+                          if (String(err).includes("wasm") || String(err).includes("fetch")) {
+                            throw new Error("WASM not supported in this browser. Please use txt/csv/tsv files instead.")
+                          }
+                          throw err
+                        }
+                      } else {
+                        const text = await file.text()
+                        text.split("\n").forEach((line) => {
+                          const trimmed = line.trim()
+                          if (!trimmed) return
+                          const tabIndex = trimmed.indexOf("\t")
+                          const commaIndex = trimmed.indexOf(",")
+                          let front = "", back = ""
+                          if (tabIndex > -1) {
+                            front = trimmed.slice(0, tabIndex).trim()
+                            back = trimmed.slice(tabIndex + 1).trim()
+                          } else if (commaIndex > -1 && (commaIndex < trimmed.indexOf('"') || trimmed.indexOf('"') === -1)) {
+                            front = trimmed.slice(0, commaIndex).trim().replace(/^"|"$/g, "")
+                            back = trimmed.slice(commaIndex + 1).trim().replace(/^"|"$/g, "")
+                          } else {
+                            const parts = trimmed.split(/\s{2,}/)
+                            if (parts.length >= 2) {
+                              front = parts[0].trim()
+                              back = parts.slice(1).join(" ").trim()
+                            } else {
+                              front = trimmed
+                            }
+                          }
+                          if (front) newCards.push({ front, back })
+                        })
+                      }
+                      if (newCards.length > 0) {
+                        newCards.forEach((card) => append(card))
+                        toast.success(t("cardsImported") || "Cards imported", { description: t("cardsImportedDesc", { count: newCards.length }) || `${newCards.length} cards imported` })
+                      } else {
+                        toast.error(t("importFailed") || "Import failed", { description: t("importFailedDesc") || "No valid cards found in file" })
+                      }
+                    } catch (err) {
+                      toast.error(t("importFailed") || "Import failed", { description: String(err) })
+                    }
+                    e.target.value = ""
+                  }}
+                  className="hidden"
+                  id="import-cards"
+                />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("import-cards")?.click()}
+                  className="inline-flex items-center justify-center gap-2 rounded-none border border-border px-5 py-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:border-accent hover:text-accent"
+                >
+                  {t("importCards") || "Import"}
                 </button>
               </div>
 

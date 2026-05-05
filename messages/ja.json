@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "gyaru",
+    "name": "Gyaru",
     "tagline": "/ 暗記カード作成"
   },
   "nav": {
@@ -17,7 +17,7 @@
     "emptyAction": "最初のデッキを作成 →"
   },
   "deck": {
-    "download": "⤓ ダウンロード",
+    "download": "ダウンロード",
     "delete": "削除",
     "deleting": "削除中...",
     "cancel": "キャンセル",
@@ -33,6 +33,11 @@
   "editor": {
     "header": "デッキエディター",
     "headerEdit": "編集: {name}",
+    "importCards": "インポート",
+    "cardsImported": "カードをインポートしました",
+    "cardsImportedDesc": "{count}枚のカードをインポートしました",
+    "importFailed": "インポートに失敗しました",
+    "importFailedDesc": "ファイルに有効なカードが見つかりません",
     "heroLabel": "v0.1 · デッキフォージ",
     "heroTitleCreate": "インダストリアルな精度で.apkgデッキを作成。",
     "heroTitleEdit": ".apkgデッキを編集",
@@ -91,5 +96,13 @@
     "cardRequired": "少なくとも1枚のカードが必要です",
     "frontRequired": "表は必須です",
     "backRequired": "裏は必須です"
+  },
+  "auth": {
+    "signIn": "サインイン",
+    "signInWithGoogle": "Googleでサインイン",
+    "signInToCreate": "デッキを作成するにはサインインしてください",
+    "signInAsOwner": "このデッキを編集するには所有者としてサインインしてください",
+    "signOut": "サインアウト",
+    "youDontOwn": "このデッキの所有者ではありません"
   }
 }

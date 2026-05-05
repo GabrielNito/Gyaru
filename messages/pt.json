@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "gyaru",
+    "name": "Gyaru",
     "tagline": "/ forja de anki"
   },
   "nav": {
@@ -17,7 +17,7 @@
     "emptyAction": "Crie seu primeiro baralho →"
   },
   "deck": {
-    "download": "⤓ Baixar",
+    "download": "Baixar",
     "delete": "Excluir",
     "deleting": "Excluindo...",
     "cancel": "Cancelar",
@@ -33,6 +33,11 @@
   "editor": {
     "header": "Editor de Baralho",
     "headerEdit": "Editar: {name}",
+    "importCards": "Importar",
+    "cardsImported": "Cartões importados",
+    "cardsImportedDesc": "{count} cartões importados",
+    "importFailed": "Falha na importação",
+    "importFailedDesc": "Nenhum cartão válido encontrado no arquivo",
     "heroLabel": "v0.1 · forja de baralhos",
     "heroTitleCreate": "Crie baralhos .apkg com precisão industrial.",
     "heroTitleEdit": "Editar baralho .apkg",
@@ -91,5 +96,13 @@
     "cardRequired": "Pelo menos um cartão é obrigatório",
     "frontRequired": "Frente é obrigatória",
     "backRequired": "Verso é obrigatório"
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signInWithGoogle": "Entrar com Google",
+    "signInToCreate": "Faça login para criar um baralho",
+    "signInAsOwner": "Faça login como proprietário para editar este baralho",
+    "signOut": "Sair",
+    "youDontOwn": "Você não é proprietário deste baralho"
   }
 }

@@ -1,21 +1,39 @@
-# Next.js template
+# Gyaru — Anki Deck Forge
 
-This is a Next.js template with shadcn/ui.
+![Gyaru Logo](public/Logo.png)
 
-## Adding components
+A minimalist web tool for building, previewing, and sharing Anki flashcard decks. Export as `.apkg` with industrial precision — no fluff, just sharp corners and faster recall.
 
-To add components to your app, run the following command:
+## Purpose
 
-```bash
-npx shadcn@latest add button
-```
+**Gyaru was built to solve one problem:** sharing Anki decks should be effortless, especially for mobile users. Many Anki apps are mobile-only or make deck creation painful on phones. Gyaru lets you:
 
-This will place the ui components in the `components` directory.
+- Create decks on any device with a browser
+- Share decks via a public global repository
+- Download `.apkg` files directly to your phone
+- Import existing cards from text files
 
-## Using components
+No account needed to browse and download. Sign in to create and publish decks.
 
-To use the components in your app, import them as follows:
+## Features
 
-```tsx
-import { Button } from "@/components/ui/button";
-```
+- **Deck Editor** — Create `.apkg` decks with live preview
+- **Global Repository** — Public database of shared decks
+- **One-Click Export** — Download decks as `.apkg` files
+- **Card Import** — Import from tab-separated, CSV, or double-space formatted text files
+- **Multi-language** — Available in English, Português, and 日本語
+- **Mobile Responsive** — Works seamlessly on all devices
+- **Firebase Auth** — Google sign-in for deck management
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Styling:** Tailwind CSS 4
+- **Auth:** Firebase Authentication
+- **Database:** PostgreSQL with Prisma ORM
+- **Internationalization:** next-intl (en, pt, ja)
+- **Flashcard Export:** ankicore
+
+## License
+
+MIT

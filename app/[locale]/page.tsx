@@ -20,7 +20,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
           <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Public <span className="text-primary">.apkg</span> repository
+              {t("heroTitle")}
             </h1>
             <div className="flex items-center gap-2 border border-border px-3 py-2 font-mono text-xs">
               <span className="h-2 w-2 bg-accent" />

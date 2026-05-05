@@ -77,7 +77,7 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
           }, 1000)
         } else {
           if (result.error === "Unauthorized") {
-            toast.error("You don't own this deck")
+            toast.error(tAuth("youDontOwn"))
           } else {
             toast.error(t("updateFailed"), { description: t("updateFailedDesc") })
           }
@@ -86,17 +86,19 @@ export default function EditDeckPage({ params }: { params: Promise<{ id: string 
     })
   }
 
+  const tAuth = useTranslations("auth")
+
   const isOwner = user && deck?.userId === user.uid
 
   if (!authLoading && !isOwner) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
-        <p className="mb-4 font-mono text-sm text-muted-foreground">Sign in as the owner to edit this deck</p>
+        <p className="mb-4 font-mono text-sm text-muted-foreground">{tAuth("signInAsOwner")}</p>
         <button
           onClick={signInWithGoogle}
           className="rounded-none border border-accent px-4 py-2 font-mono text-xs uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
         >
-          Sign in with Google
+          {tAuth("signInWithGoogle")}
         </button>
       </div>
     )
