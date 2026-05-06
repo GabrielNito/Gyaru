@@ -5,7 +5,8 @@
   },
   "nav": {
     "create": "作成",
-    "globalDB": "グローバルDB"
+    "globalDB": "グローバルDB",
+    "myDecks": "マイデッキ"
   },
   "home": {
     "heroLabel": "/// グローバルデータベース",
@@ -134,6 +135,18 @@
     "signInToCreate": "デッキを作成するにはサインインしてください",
     "signInAsOwner": "このデッキを編集するには所有者としてサインインしてください",
     "signOut": "サインアウト",
-    "youDontOwn": "このデッキの所有者ではありません"
+    "youDontOwn": "このデッキの所有者ではありません",
+    "loading": "読み込み中...",
+    "signIn": "サインイン"
+  },
+  "myDecks": {
+    "heroLabel": "/// マイデッキ",
+    "heroTitle": "マイデッキ",
+    "heroDesc": "アカウントに作成・保存したデッキです。",
+    "signInRequired": "デッキを表示するにはサインインしてください。",
+    "noDecks": "まだデッキがありません",
+    "noDecksDesc": "まだデッキを作成していません。今すぐ最初のデッキを作成しましょう。",
+    "create": "デッキを作成",
+    "loading": "読み込み中..."
   }
 }

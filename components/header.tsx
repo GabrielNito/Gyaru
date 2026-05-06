@@ -39,6 +39,12 @@ export function Header() {
         {/* Desktop nav */}
         <div className="hidden items-center gap-2 sm:flex">
           <Link
+            href={`/${locale}/my-decks`}
+            className="rounded-none border border-transparent px-3 py-2 font-mono text-xs tracking-wider text-muted-foreground uppercase transition-colors hover:border-accent hover:text-accent"
+          >
+            {t("myDecks")}
+          </Link>
+          <Link
             href={`/${locale}`}
             className="rounded-none border border-transparent px-3 py-2 font-mono text-xs tracking-wider text-muted-foreground uppercase transition-colors hover:border-accent hover:text-accent"
           >
@@ -91,6 +97,13 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="border-t border-border bg-background/95 backdrop-blur-md sm:hidden">
           <div className="flex flex-col gap-2 px-4 py-4">
+            <Link
+              href={`/${locale}/my-decks`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-none border border-transparent px-3 py-2 font-mono text-xs tracking-wider text-muted-foreground uppercase transition-colors hover:border-accent hover:text-accent"
+            >
+              {t("myDecks")}
+            </Link>
             <Link
               href={`/${locale}`}
               onClick={() => setMobileMenuOpen(false)}

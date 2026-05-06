@@ -5,7 +5,8 @@
   },
   "nav": {
     "create": "Criar",
-    "globalDB": "Banco Global"
+    "globalDB": "Banco Global",
+    "myDecks": "Meus Baralhos"
   },
   "home": {
     "heroLabel": "/// banco de dados global",
@@ -134,6 +135,18 @@
     "signInToCreate": "Faça login para criar um baralho",
     "signInAsOwner": "Faça login como proprietário para editar este baralho",
     "signOut": "Sair",
-    "youDontOwn": "Você não é proprietário deste baralho"
+    "youDontOwn": "Você não é proprietário deste baralho",
+    "loading": "Carregando...",
+    "signIn": "Entrar"
+  },
+  "myDecks": {
+    "heroLabel": "/// meus baralhos",
+    "heroTitle": "Meus Baralhos",
+    "heroDesc": "Baralhos que você criou e salvou na sua conta.",
+    "signInRequired": "Entre para ver seus baralhos.",
+    "noDecks": "nenhum baralho ainda",
+    "noDecksDesc": "Você ainda não criou nenhum baralho. Comece a criar seu primeiro baralho agora.",
+    "create": "Criar baralho",
+    "loading": "Carregando..."
   }
 }

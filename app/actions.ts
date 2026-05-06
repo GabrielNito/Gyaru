@@ -69,6 +69,41 @@ export async function getDecks(): Promise<DeckWithCards[]> {
   }
 }
 
+export async function getMyDecks(userId: string): Promise<DeckWithCards[]> {
+  try {
+    const decks = await db.deck.findMany({
+      where: { userId },
+      orderBy: { updatedAt: "desc" },
+      include: {
+        cards: {
+          select: {
+            id: true,
+            front: true,
+            back: true,
+          },
+        },
+      },
+    })
+
+    return decks.map((d) => ({
+      id: d.id,
+      name: d.name,
+      description: d.description,
+      userId: d.userId,
+      createdAt: d.createdAt,
+      updatedAt: d.updatedAt,
+      cards: d.cards.map((c) => ({
+        id: c.id,
+        front: c.front,
+        back: c.back,
+      })),
+    }))
+  } catch (error) {
+    console.error("Failed to fetch user decks:", error)
+    return []
+  }
+}
+
 export async function getDeck(id: string): Promise<DeckWithCards | null> {
   try {
     const deck = await db.deck.findUnique({

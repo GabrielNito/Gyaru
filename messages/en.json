@@ -5,7 +5,8 @@
   },
   "nav": {
     "create": "Create",
-    "globalDB": "Global DB"
+    "globalDB": "Global DB",
+    "myDecks": "My Decks"
   },
   "home": {
     "heroLabel": "/// global database",
@@ -134,6 +135,18 @@
     "signInToCreate": "Sign in to create a deck",
     "signInAsOwner": "Sign in as the owner to edit this deck",
     "signOut": "Sign out",
-    "youDontOwn": "You don't own this deck"
+    "youDontOwn": "You don't own this deck",
+    "loading": "Loading...",
+    "signIn": "Sign in"
+  },
+  "myDecks": {
+    "heroLabel": "/// my decks",
+    "heroTitle": "My Decks",
+    "heroDesc": "Decks you have created and saved to your account.",
+    "signInRequired": "Sign in to view your decks.",
+    "noDecks": "no decks yet",
+    "noDecksDesc": "You haven't created any decks yet. Start building your first deck now.",
+    "create": "Create deck",
+    "loading": "Loading..."
   }
 }
