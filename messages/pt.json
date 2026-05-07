@@ -11,6 +11,9 @@
   "home": {
     "heroLabel": "/// banco de dados global",
     "heroTitle": "Repositório público .apkg",
+    "heroDesc": "Uma ferramenta minimalista para construir, visualizar e compartilhar flashcards do Anki. Sem frescura. Apenas cantos vivos e memorização rápida.",
+    "sectionLabel": "/// seção_01",
+    "sectionTitle": "Baralhos Disponíveis",
     "deckCount": "{count, plural, one {# baralho} other {# baralhos}}",
     "cardCount": "{count, plural, one {# cartão} other {# cartões}}",
     "emptyTitle": "nenhum baralho indexado",
@@ -144,6 +147,7 @@
     "heroTitle": "Meus Baralhos",
     "heroDesc": "Baralhos que você criou e salvou na sua conta.",
     "signInRequired": "Entre para ver seus baralhos.",
+    "signIn": "Entrar",
     "noDecks": "nenhum baralho ainda",
     "noDecksDesc": "Você ainda não criou nenhum baralho. Comece a criar seu primeiro baralho agora.",
     "create": "Criar baralho",

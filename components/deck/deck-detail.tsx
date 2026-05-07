@@ -80,7 +80,7 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
               {td("owner")}:{" "}
               <span className="text-foreground">
                 {deck.userId
-                  ? (user?.email?.slice(0, 20) ?? "user")
+                  ? (user?.email ? user.email.split("@")[0] : td("anonymous"))
                   : td("anonymous")}
               </span>
             </span>
@@ -146,7 +146,7 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
                     <AlertDialogAction
                       onClick={handleDelete}
                       disabled={isDeleting}
-                      className="rounded-none bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
+                      className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 disabled:opacity-50"
                     >
                       {isDeleting ? t("deleting") : t("delete")}
                     </AlertDialogAction>

@@ -93,7 +93,7 @@ export function DeckCard({ deck, locale }: DeckCardProps) {
           <>
             <Link
               href={`/${locale}/editor/${deck.id}`}
-              className="inline-flex items-center justify-center rounded-none border border-border px-3 py-2 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+              className="inline-flex items-center justify-center rounded-none border border-border px-3 py-2 text-muted-foreground transition-colors hover:border-accent hover:text-accent"
             >
               <Pencil className="h-4 w-4" />
             </Link>
@@ -119,7 +119,7 @@ export function DeckCard({ deck, locale }: DeckCardProps) {
                   <AlertDialogAction
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    className="rounded-none bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
+                    className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 disabled:opacity-50"
                   >
                     {isDeleting ? t("deleting") : t("delete")}
                   </AlertDialogAction>

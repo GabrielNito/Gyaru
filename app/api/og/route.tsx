@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   const [interBold, interRegular, interSemiBold] = await Promise.all([
     fetch(new URL("https://fonts.gstatic.com/s/inter/v18/UcCo3FwrK3iLTcviYwY.woff2")).then((r) => r.arrayBuffer()),
     fetch(new URL("https://fonts.gstatic.com/s/inter/v18/UcC73FwrK3iLTcviYwY.woff2")).then((r) => r.arrayBuffer()),
-    fetch(new URL("https://fonts.gstatic.com/s/inter/v18/UcC73FwrK3iLTcviYwY.woff2")).then((r) => r.arrayBuffer()),
+    fetch(new URL("https://fonts.gstatic.com/s/inter/v18/UcC83FwrK3iLTcviYwY.woff2")).then((r) => r.arrayBuffer()),
   ])
 
   return new ImageResponse(

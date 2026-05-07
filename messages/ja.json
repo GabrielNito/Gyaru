@@ -11,6 +11,9 @@
   "home": {
     "heroLabel": "/// グローバルデータベース",
     "heroTitle": "公開 .apkg リポジトリ",
+    "heroDesc": "Ankiフラッシュカードの作成、プレビュー、共有のためのミニマルなツール。無駄なし。鋭い角と高速な記憶。",
+    "sectionLabel": "/// セクション_01",
+    "sectionTitle": "利用可能なデッキ",
     "deckCount": "{count, plural, one {# デッキ} other {# デッキ}}",
     "cardCount": "{count, plural, one {# カード} other {# カード}}",
     "emptyTitle": "デッキが登録されていません",
@@ -144,6 +147,7 @@
     "heroTitle": "マイデッキ",
     "heroDesc": "アカウントに作成・保存したデッキです。",
     "signInRequired": "デッキを表示するにはサインインしてください。",
+    "signIn": "サインイン",
     "noDecks": "まだデッキがありません",
     "noDecksDesc": "まだデッキを作成していません。今すぐ最初のデッキを作成しましょう。",
     "create": "デッキを作成",

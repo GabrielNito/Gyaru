@@ -11,6 +11,9 @@
   "home": {
     "heroLabel": "/// global database",
     "heroTitle": "Public .apkg repository",
+    "heroDesc": "A minimalist tool for building, previewing, and sharing Anki flashcards. No fluff. Just sharp corners and faster recall.",
+    "sectionLabel": "/// section_01",
+    "sectionTitle": "Available Decks",
     "deckCount": "{count, plural, one {# deck} other {# decks}}",
     "cardCount": "{count, plural, one {# card} other {# cards}}",
     "emptyTitle": "no decks indexed",
@@ -144,6 +147,7 @@
     "heroTitle": "My Decks",
     "heroDesc": "Decks you have created and saved to your account.",
     "signInRequired": "Sign in to view your decks.",
+    "signIn": "Sign in",
     "noDecks": "no decks yet",
     "noDecksDesc": "You haven't created any decks yet. Start building your first deck now.",
     "create": "Create deck",

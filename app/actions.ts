@@ -27,6 +27,7 @@ export async function saveDeck(
 
     revalidatePath("/")
     revalidatePath("/editor")
+    revalidatePath("/my-decks")
 
     return { success: true, deckId: deck.id }
   } catch (error) {
@@ -163,6 +164,7 @@ export async function deleteDeck(
 
     revalidatePath("/")
     revalidatePath("/editor")
+    revalidatePath("/my-decks")
 
     return { success: true }
   } catch (error) {
@@ -211,6 +213,7 @@ export async function updateDeck(
 
     revalidatePath("/")
     revalidatePath("/editor")
+    revalidatePath("/my-decks")
 
     return { success: true }
   } catch (error) {

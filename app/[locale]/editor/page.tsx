@@ -251,7 +251,14 @@ export default function EditorPage() {
                       type="button"
                       onClick={() => {
                         const newCards: { front: string; back: string }[] = []
-                        const cleaned = aiResponse.replace(/```[\s\S]*?\n([\s\S]*?)```/g, "$1")
+                        let cleaned = aiResponse
+
+                        // Extract content from markdown code blocks (with or without language specifier)
+                        const codeBlockMatch = aiResponse.match(/```[\s\S]*?\n([\s\S]*?)```/)
+                        if (codeBlockMatch) {
+                          cleaned = codeBlockMatch[1]
+                        }
+
                         cleaned.split("\n").forEach((line) => {
                           const trimmed = line.trim()
                           if (!trimmed) return

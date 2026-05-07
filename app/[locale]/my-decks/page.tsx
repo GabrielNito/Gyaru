@@ -23,15 +23,25 @@ export default function MyDecksPage() {
   const locale = useLocale()
 
   useEffect(() => {
-    if (user) {
-      setFetching(true)
-      getMyDecks(user.uid)
-        .then((result) => {
+    if (!user) return
+
+    let cancelled = false
+    setFetching(true)
+    getMyDecks(user.uid)
+      .then((result) => {
+        if (!cancelled) {
           setDecks(result)
           setFetching(false)
-        })
-        .catch(() => setFetching(false))
-    }
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setDecks([])
+          setFetching(false)
+        }
+      })
+
+    return () => { cancelled = true }
   }, [user])
 
   if (loading || fetching) {
