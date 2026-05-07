@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache"
 export async function saveDeck(
   data: DeckInput,
   userId?: string,
-  userEmail?: string,
+  userEmail?: string | null,
 ): Promise<{ success: boolean; deckId?: string; error?: string }> {
   try {
     const validated = deckSchema.parse(data)
