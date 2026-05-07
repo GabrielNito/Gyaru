@@ -14,6 +14,7 @@ export default function MyDecksPage() {
     name: string
     description: string | null
     userId: string | null
+    userEmail: string | null
     createdAt: Date
     updatedAt: Date
     cards: Array<{ id: string; front: string; back: string }>
