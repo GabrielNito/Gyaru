@@ -79,8 +79,8 @@ export function DeckDetail({ deck, locale }: DeckDetailProps) {
             <span>
               {td("owner")}:{" "}
               <span className="text-foreground">
-                {deck.userId
-                  ? (user?.email ? user.email.split("@")[0] : td("anonymous"))
+                {deck.userEmail
+                  ? deck.userEmail.split("@")[0]
                   : td("anonymous")}
               </span>
             </span>

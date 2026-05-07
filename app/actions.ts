@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache"
 export async function saveDeck(
   data: DeckInput,
   userId?: string,
+  userEmail?: string,
 ): Promise<{ success: boolean; deckId?: string; error?: string }> {
   try {
     const validated = deckSchema.parse(data)
@@ -16,6 +17,7 @@ export async function saveDeck(
         name: validated.name,
         description: validated.description,
         userId: userId ?? null,
+        userEmail: userEmail ?? null,
         cards: {
           create: validated.cards.map((card) => ({
             front: card.front,
@@ -56,6 +58,7 @@ export async function getDecks(): Promise<DeckWithCards[]> {
       name: d.name,
       description: d.description,
       userId: d.userId,
+      userEmail: d.userEmail,
       createdAt: d.createdAt,
       updatedAt: d.updatedAt,
       cards: d.cards.map((c) => ({
@@ -91,6 +94,7 @@ export async function getMyDecks(userId: string): Promise<DeckWithCards[]> {
       name: d.name,
       description: d.description,
       userId: d.userId,
+      userEmail: d.userEmail,
       createdAt: d.createdAt,
       updatedAt: d.updatedAt,
       cards: d.cards.map((c) => ({
@@ -127,6 +131,7 @@ export async function getDeck(id: string): Promise<DeckWithCards | null> {
       name: deck.name,
       description: deck.description,
       userId: deck.userId,
+      userEmail: deck.userEmail,
       createdAt: deck.createdAt,
       updatedAt: deck.updatedAt,
       cards: deck.cards.map((c) => ({

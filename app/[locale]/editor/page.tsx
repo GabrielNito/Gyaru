@@ -88,7 +88,7 @@ export default function EditorPage() {
       return
     }
     startTransition(async () => {
-      const result = await saveDeck({ name: data.name, description: data.description, cards: filteredCards }, user?.uid)
+      const result = await saveDeck({ name: data.name, description: data.description, cards: filteredCards }, user?.uid, user?.email)
       if (result.success) {
         toast.success(t("saved"), { description: t("savedDesc", { name: data.name }) })
         setTimeout(() => {
