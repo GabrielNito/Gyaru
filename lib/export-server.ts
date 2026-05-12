@@ -43,11 +43,11 @@ function escapeSql(str: string): string {
 
 function sanitizeField(str: string): string {
   return str
+    .replace(/<br\s*\/?>/gi, "\n")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/\\n/g, "<br>")
-    .replace(/\r?\n/g, "<br>")
+    .replace(/\r?\n/g, "\n")
 }
 
 export async function createAnkiDb(deck: ExportDeck): Promise<Uint8Array> {
@@ -103,7 +103,7 @@ export async function createAnkiDb(deck: ExportDeck): Promise<Uint8Array> {
         { name: "Back", ord: 1, sticky: false, rtl: false, font: "Arial", size: 20, media: [] },
       ],
       css:
-        ".card {\n font-family: arial;\n font-size: 20px;\n text-align: center;\n color: black;\n background-color: white;\n}",
+        ".card {\n font-family: arial;\n font-size: 20px;\n text-align: center;\n color: black;\n background-color: white;\n white-space: pre-wrap;\n}",
       req: [[0, "none", [0]]],
       latexPre:
         "\\documentclass[12pt]{article}\n\\special{paperwidth 3in}\n\\special{paperheight 5in}\n\\begin{document}\n",
@@ -269,11 +269,11 @@ export async function generateApkgBuffer(deck: ExportDeck): Promise<ArrayBuffer>
 }
 
 function escapeTsvField(str: string): string {
-  const html = str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\\n/g, "<br>").replace(/\r?\n/g, "<br>")
-  if (html.includes("\t") || html.includes("\n") || html.includes('"') || html.includes("<")) {
-    return `"${html.replace(/"/g, '""')}"`
+  const field = str.replace(/<br\s*\/?>/gi, "\n").replace(/\r?\n/g, "\n")
+  if (field.includes("\t") || field.includes("\n") || field.includes('"')) {
+    return `"${field.replace(/"/g, '""')}"`
   }
-  return html
+  return field
 }
 
 export function generateTxtContent(deck: ExportDeck): string {
